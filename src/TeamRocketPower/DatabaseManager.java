@@ -11,7 +11,13 @@ public class DatabaseManager {
 	
 	public DatabaseManager()
 	{
+		classes = new ArrayList();
 		parseCourses();
+		for (int x = 0; x < classes.size(); x++)
+		{
+			Course c = (Course)classes.get(x);
+			System.out.println(c.toString());
+		}
 	}
 	
 	public void parseCourses()
@@ -31,41 +37,22 @@ public class DatabaseManager {
 		    	String courseDescription = stream.readLine();
 		    	String courseCredits = stream.readLine();
 		    	
-		    	
-		    	
-		    	System.out.println(courseSubject + " " + courseNumber + " - " + courseName);
-		    	System.out.println(courseFormalName);
-		    	System.out.println(coursePrereqs);
-		    	System.out.println(courseDescription);
-		    	System.out.println(courseCredits);
+		    			    	
 		    	Course currentCourse = new Course();
 		    	currentCourse.setCourseDescription(courseDescription);
 		    	currentCourse.setCourseName(courseFormalName);
 		    	currentCourse.setCourseNumber(Integer.parseInt(courseNumber));
 		    	currentCourse.setCourseSubject(courseSubject);
 		    	String[] list = courseCredits.split(" ");
-		    	currentCourse.setCreditHours(Integer.parseInt(list[0]));
+		    	currentCourse.setCreditHours((int)Float.parseFloat(list[0]));
 		    	coursePrereqs = coursePrereqs.replaceFirst("Prerequisite: ", "");
 		    	list = coursePrereqs.split(", ");
 		    	for (int k = 0; k < list.length; k++)
 		    	{
 		    		currentCourse.addPrereq(list[k]);
-		    	}
+		    	}		    	
+		    	classes.add(currentCourse);
 		    	
-		    	/*
-		    	
-		    	
-		    	
-	    		String y = new DataInputStream(fin).readLine();	
-	    		String xy = new DataInputStream(fin).readLine();
-	    		double y1 = Double.parseDouble(y);
-	    		double x1 = Double.parseDouble(x);
-	    		double xy1 = Double.parseDouble(xy);
-	    		maps[(int)x1][(int)y1] = (int)xy1;
-	    		System.out.println(x1);
-	    		System.out.println(y1);
-	    		System.out.println(xy1);
-	    		*/
 	    		courseNumber = stream.readLine();
 		    }	    
 		    fin.close();
