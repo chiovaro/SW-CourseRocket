@@ -74,7 +74,8 @@ Introduction to operating systems concepts. Topics may include multiprogramming,
 4330
 PROGRAMMING LANGUAGE CONCEPTS
 Programming Language Concepts. 
-Prerequisites: CSc 3210 and CSc 3410 with grades of C or higher. Fundamental programming language concepts, including syntax versus semantics, binding time, scopes, and storage management. 
+Prerequisites: CSc 3210 and CSc 3410
+Fundamental programming language concepts, including syntax versus semantics, binding time, scopes, and storage management. 
 4.000 Credit hours
 4350
 SOFTWARE ENGINEERING-CTW

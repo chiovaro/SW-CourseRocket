@@ -79,4 +79,18 @@ public class Course extends Section {
     	CreditHours = aNumber;
     }
     
+    
+    public String toString()
+    {
+    	String sendString = CourseNumber + "\n" + CourseName + "\n" + CourseName + "\nPrerequisites: ";
+    	for (int x = 0; x < PrereqList.size(); x++)
+    	{
+    		if (x == PrereqList.size()-1)
+    			sendString += PrereqList.get(x) + "\n";
+    		else
+    			sendString += PrereqList.get(x) + ", ";
+    	}
+    	sendString += CourseDescription + "\n" + CreditHours + " Credit Hours";	
+    	return sendString;
+    }
 }
