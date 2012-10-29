@@ -1,0 +1,138 @@
+CSc
+2010
+INTRO TO COMPUTER SCIENCE
+Introduction to Computer Science.
+
+A first introduction to the discipline of computer science. Topics include algorithmic foundations, hardware concepts, virtual machine concepts, software systems, applications, and social issues. 
+3.000 Credit hours 
+2310
+PRIN OF COMPUTER PROGRAMMING
+Principles of Computer Programming. 
+Prerequisite: CSc 2010 
+Fundamental principles of computer programming. Expressions, procedures, variable types, data, input/output. Emphasis on structure and clarity as well as correctness. 
+3.000 Credit hours
+2510
+THEOR FOUNDATIONS OF COMP SCI
+Theoretical Foundations of Computer Science. 
+Prerequisite: CSc 2010, Math 1113
+This course covers the basic theoretical foundations required to study various sub-disciplines in computer science. Topics include: propositional and predicate logic with applications to logic programming, database querying, and program verification; induction and its application in proving correctness and termination of programs; recurrence relations, combinatorics, and graph theory with applications to analysis of algorithms; sets, relations, and functions and their applications in databases, functional programming, and automata. 
+3.000 Credit hours 
+3210
+COMPUTER ORG & PROGRAMMING
+Computer Organization and Programming. 
+Prerequisites: CSc 2310, CSc 2510 or Math 2420
+Computer structure and machine language, addressing techniques, macros, file I/O, program segmentation, and linkage. 
+3.000 Credit hours 
+3320
+SYSTEM-LEVEL PROGRAMMING
+System-Level Programming. 
+Prerequisite: CSc 2310
+An introduction to programming at the level of the operating system. Topics include editors, system calls, programming tools, files, processes, interprocess communication, and shells. 
+3.000 Credit hours 
+3410
+DATA STRUCTURES-CTW
+Data Structures-CTW. 
+Prerequisites: CSc 2310, Math 2211, CSc 2510 or Math 2420
+Basic concepts and analysis of data representation and associated algorithms, including linearly-linked lists, multi-linked structures, trees, searching, and sorting. Serves as one of the two Critical Thinking Through Writing (CTW) courses required of all computer science majors. 
+3.000 Credit hours 
+4110
+EMBEDDED SYSTEMS
+Introduction to Embedded Systems Laboratory. 
+Prerequisite: CSc 3320 or Phys 4110
+Four lecture hours per week. Topics taken from: review of basic logic functions; automatic systems; microprocessor- based systems and applications; embedded system software survey; microprocessor-based applications; digital communications; and embedded systems programming. 
+4.000 Credit hours 
+4210
+COMPUTER ARCHITECTURE
+Computer Architecture. 
+Prerequisite: CSc 3210
+Logic design, combinatorial and sequential circuits, input-output devices, memory, processors, controllers, parallel architectures, bit-slicing, reduced instruction sets. 
+4.000 Credit hours 
+4220
+COMPUTER NETWORKS
+Computer Networks. 
+Prerequisites: CSc 3320, Math 3030
+Introduction to computer networks; details of layered network protocols with emphasis on functionality and analysis. Principles of relevant state-of-the-art network standards. 
+4.000 Credit hours 
+4221
+WIRELESS NET & MOBILE COMP
+Wireless Networks and Mobile Computing. 
+Prerequisite: CSc 4220 or consent. 
+Introduction to wireless communication networks and mobile computing. Topics include: wireless communications technology; communication protocols in wireless networks; representative network types such as cellular wireless networks, wireless LANs, wireless ad hoc networks and wireless sensor networks, and mobile communication systems. 
+4.000 Credit hours 
+4270
+INTRO DIGITAL SIGNAL PROCESS
+Introduction to Digital Signal Processing. 
+Prerequisite: CSc 4210
+This course covers the nature of information, signals, transforms, and applications. Topics include analog to digital and digital to analog conversion, data storage (such as the audio format MP3), data transforms, and filters. Applications include noise reduction, signal analysis, volume control (e.g., audio signals), and compression. We will be using computer programs to handle mathematical modeling and calculations. 
+4.000 Credit hours 
+4320
+OPERATING SYSTEMS
+Operating Systems. 
+Prerequisite: CSc 3320
+Introduction to operating systems concepts. Topics may include multiprogramming, resources allocation and management, and their implementation. 
+4.000 Credit hours
+4330
+PROGRAMMING LANGUAGE CONCEPTS
+Programming Language Concepts. 
+Prerequisites: CSc 3210 and CSc 3410 with grades of C or higher. Fundamental programming language concepts, including syntax versus semantics, binding time, scopes, and storage management. 
+4.000 Credit hours
+4350
+SOFTWARE ENGINEERING-CTW
+Software Engineering-CTW. 
+Prerequisite: CSc 3410
+Techniques used in large scale scientific or technical software development, including requirements analysis, specification, systems design, implementation, testing, validation, verification, and maintenance. Serves as one of the two Critical Thinking Through Writing (CTW) courses required of all computer science majors. 
+4.000 Credit hours 
+4370
+WEB PROGRAMMING
+Web Programming. 
+Prerequisite: CSc 2310
+The course introduces the student to programming techniques required to develop Web applications. Topics include: HTML forms, JavaScript, Servlets and Java Server Pages, PHP and MySQL, Web access to Oracle databases, and XML. 
+4.000 Credit hours 
+4510
+AUTOMATA
+Automata. 
+Prerequisite: CSc 2510
+Theory of computing devices and the languages they recognize. 
+4.000 Credit hours 
+4520
+DESIGN & ANALYSIS: ALGORITHMS
+Design and Analysis of Algorithms. 
+Prerequisites: CSc 3410, Math 3030
+Techniques for designing efficient algorithms; analysis of algorithms; lower bound arguments; algorithms for sorting, selection, graphs, and string matching. 
+4.000 Credit hours
+4710
+DATABASE SYSTEMS
+Database Systems. 
+Prerequisite: CSc 3410
+An introduction to the fundamental concepts and principles that underlie the relational model of data. Topics include formal query languages; SQL; query optimization; relational database design theory; physical database design, integrity, security, and concurrency control. 
+4.000 Credit hours 
+4720
+HUMAN-COMPUTER INTERACTION
+Human-Computer Interaction. 
+Prerequisite: CSc 2310
+Techniques and methodologies for development of user interfaces in software systems; topics include interaction styles, interaction devices, user documentation, and interface assessment. 
+4.000 Credit hours
+4740
+DATA MINING
+Data Mining. 
+Prerequisite: CSc 3410
+Introduction to basic data mining techniques (such as association rules mining, cluster analysis, and classification methods) and their applications (such as Web data mining, biomedical data mining and security). 
+4.000 Credit hours 
+4821
+FUNDAMENTALS OF GAME DESIGN
+Fundamentals of Game Design. 
+Prerequisite: CSc 2310
+Covers major aspects of game design such as challenges, gameplay, actions, core mechanics, worlds, characters, game balancing, user interfaces, and game genres. 
+4.000 Credit hours
+4840
+COMPUTER GRAPHICS IMAGING
+Computer Graphics Imaging.
+
+Study the theories, techniques and tools for creating 3D graphics content. Topics include 3D modeling, camera, lighting, materials, texture mapping, physics based modeling, basic animation, and rendering techniques (such as tracing and radiosity). 
+4.000 Credit hours 
+4880
+HONORS THESIS: WRITING
+Honors Thesis: Writing. 
+Prerequisites: CSc 4870, consent of the instructor, Honors Program director. 
+Writing or production of honors thesis or project. 
+3.000 Credit hours 
