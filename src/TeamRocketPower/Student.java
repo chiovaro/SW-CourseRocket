@@ -5,7 +5,7 @@ import java.lang.*;
 
 /**
  */
-public class Student extends CompletedCourse {
+public class Student {
     /**
      */
     private ArrayList CompletedCourses;
@@ -20,6 +20,10 @@ public class Student extends CompletedCourse {
 
     /**
      */
-    private String ProgramofStudy;
+    private String ProgramOfStudy;
+    
+    private String StudentName;
+    
+    private String StudentID;
 }
 

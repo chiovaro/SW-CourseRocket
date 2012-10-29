@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class DatabaseManager {
 	
-	ArrayList classes; //Update
+	ArrayList classes;
 	
 	public DatabaseManager()
 	{
@@ -42,6 +42,7 @@ public class DatabaseManager {
 		    	currentCourse.setCourseDescription(courseDescription);
 		    	currentCourse.setCourseName(courseFormalName);
 		    	currentCourse.setCourseNumber(Integer.parseInt(courseNumber));
+		    	currentCourse.setCourseSubject(courseSubject);
 		    	String[] list = courseCredits.split(" ");
 		    	currentCourse.setCreditHours(Integer.parseInt(list[0]));
 		    	coursePrereqs = coursePrereqs.replaceFirst("Prerequisite: ", "");

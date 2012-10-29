@@ -16,5 +16,7 @@ public class Teacher extends Section {
     /**
      */
     private int Dept;
+    
+    
 }
 

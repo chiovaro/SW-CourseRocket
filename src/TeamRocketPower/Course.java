@@ -9,6 +9,8 @@ public class Course extends Section {
     /**
      */
     private String CourseName;
+    
+    private String CourseSubject;
 
     /**
      */
@@ -45,6 +47,11 @@ public class Course extends Section {
     	CourseName = aName;
     }
     
+    public void setCourseSubject(String aSub)
+    {
+    	CourseSubject = aSub;
+    }
+    
     public void setCourseNumber(int aNumber)
     {
     	CourseNumber = aNumber;
@@ -71,4 +78,3 @@ public class Course extends Section {
     }
     
 }
-
