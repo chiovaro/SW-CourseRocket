@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class DatabaseManager {
 	
-	ArrayList classes;
+	ArrayList classes; //Update
 	
 	public DatabaseManager()
 	{
