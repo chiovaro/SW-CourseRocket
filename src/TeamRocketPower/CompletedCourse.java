@@ -13,5 +13,25 @@ public class CompletedCourse {
     /**
      */
     private float FinalGrade;
+    
+    public CompletedCourse(int cRN, float finalGrade)
+    {
+    	CRN = cRN;
+    	FinalGrade = finalGrade;
+    }
+    
+    public CompletedCourse(String aToString)
+    {
+    	String list[] = aToString.split("\n");
+    	CRN = Integer.parseInt(list[0]);
+    	FinalGrade = Float.parseFloat(list[1]);
+    }
+    
+    public String toString()
+    {
+    	String output = "";
+    	output += CRN + "\n" + FinalGrade;
+    	return output;
+    }    
 }
 
