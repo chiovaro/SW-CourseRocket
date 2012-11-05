@@ -159,6 +159,11 @@ public class Section{
 		return CourseName;
 	}
 	
+	public int getCourseNumber()
+	{
+		return this.CourseNumber;
+	}
+	
 	
 	public int getCRN()
 	{
