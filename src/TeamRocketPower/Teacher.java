@@ -64,6 +64,11 @@ public class Teacher extends Section {
     	}
     }
     
+    public String getTeacherName()
+    {
+    	return TeacherName;
+    }
+    
     public int getTeacherID()
     {
     	return TeacherID;

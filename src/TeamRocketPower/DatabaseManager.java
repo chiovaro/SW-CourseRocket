@@ -1,5 +1,7 @@
 package TeamRocketPower;
 
+import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -35,6 +37,139 @@ public class DatabaseManager {
 		}
 	}
 	
+	public boolean registrationPrereqTest(Student aStudent, Section aSection)
+	{
+		for (int x = 0; x < this.classes.size(); x++)
+		{
+			Course c = (Course)classes.get(x);
+			if (c.getDepartment().equalsIgnoreCase(aSection.getCourseName())
+					&& c.getCourseNumber() == aSection.getCourseNumber())
+			{	
+				
+				for (int y = 0; y < c.getPrereqList().size(); y++)
+				{
+					String prereq = (String)c.getPrereqList().get(y);
+					if (!prereq.equalsIgnoreCase(""))
+					{
+						boolean passed = false;
+						for (int z = 0; z < aStudent.getCompletedCourses().size(); z++)
+						{
+							Section s = (Section)aStudent.getCompletedCourses().get(z);
+							String sectionName = s.getCourseName() + " " + s.getCourseNumber();
+							if (sectionName.equalsIgnoreCase(prereq))
+							{
+								passed = true;
+							}
+						}
+						for (int z = 0; z < aStudent.getProgressCourses().size(); z++)
+						{
+							Section s = (Section)aStudent.getProgressCourses().get(z);
+							String sectionName = s.getCourseName() + " " + s.getCourseNumber();
+							if (sectionName.equalsIgnoreCase(prereq))
+							{
+								passed = true;
+							}
+						}
+						
+						/*DELETE THIS ITS A HACK TO NOT HAVE REQS*/
+						System.out.println("HERE");
+						for (int z = 0; z < aStudent.getRegisteredClasses().size(); z++)
+						{
+							Section s = (Section)aStudent.getRegisteredClasses().get(z);
+							String sectionName = s.getCourseName() + " " + s.getCourseNumber() + " ";
+							String sectionName2 = s.getCourseName() + " " + s.getCourseNumber();
+							System.out.println(prereq + " : " + sectionName);
+							if (sectionName.equalsIgnoreCase(prereq)
+									|| sectionName2.equalsIgnoreCase(prereq))
+							{
+								passed = true;
+							}
+						}
+						
+						
+						
+						if (!passed)
+						{
+							return false;
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	public boolean classesCollide(Section s1, Section s2)
+	{
+		ArrayList meets1 = s1.getMeetingTimes();
+		ArrayList meets2 = s2.getMeetingTimes();
+		
+		for (int x = 0; x < meets1.size(); x++)
+		{
+			for (int y = 0; y < meets2.size(); y++)
+			{
+				Date meetDate1 = (Date)meets1.get(x);
+				Date meetDate2 = (Date)meets2.get(y);
+				int c1Duration = s1.getClassDuration();
+				int c2Duration = s2.getClassDuration();
+				if (meetDate1.getDay() == meetDate2.getDay())
+				{
+					float start = meetDate1.getHours();
+					float end = start + ((float)c1Duration/60.0f);
+					
+					float meetStart = meetDate2.getHours();
+					float meetEnd = meetStart + ((float)c2Duration/60.0f);
+					
+					Rectangle aRect = new Rectangle();
+					Rectangle bRect = new Rectangle();
+					aRect.setBounds(0, (int)start*60, 10, (int)((float)c1Duration));
+					bRect.setBounds(0, (int)meetStart*60, 10, (int)((float)c2Duration));
+					
+					if (aRect.intersects(bRect))
+					{
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	
+	public boolean checkAlreadyAdded(Student aStudent, Course c)
+	{
+		for (int s = 0; s < aStudent.getRegisteredClasses().size(); s++)
+		{
+			Section sec = (Section)aStudent.getRegisteredClasses().get(s);
+			for (int x1 = 0; x1 < this.classes.size(); x1++)
+			{
+				Course c1 = (Course)classes.get(x1);
+				if (c1.getDepartment().equalsIgnoreCase(sec.getCourseName())
+						&& c1.getCourseNumber() == sec.getCourseNumber())
+				{
+					if (c.getDepartment().equalsIgnoreCase(c1.getDepartment())
+							&& c.getCourseNumber() == c1.getCourseNumber())
+					{
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean registerStudentSection(Student aStudent, Section aSection)
+	{
+		if (!aStudent.getTentativeCourses().contains(aSection) && this.registrationPrereqTest(aStudent, aSection))
+		{
+			ArrayList list = aStudent.getTentativeCourses();
+			list.add(aSection);
+			
+			return true;
+		}
+		return false;
+	}
+	
 	public void generateClasses()
 	{
 		Date startDate;
@@ -56,7 +191,7 @@ public class DatabaseManager {
 		for (int x = 0; x < classes.size(); x++)
 		{
 			Course c = (Course)classes.get(x);
-			int duration = ((int)(Math.random()*2)) == 0 ? 75 : 105; 
+			int duration = ((int)(Math.random()*2)) == 0 ? 75 : 105;
 			int rand = (int)(Math.random()*3) + 1;
 			for (int t = 0; t < rand; t++)
 			{
@@ -65,16 +200,24 @@ public class DatabaseManager {
 				Date day1;
 				Date day2;
 				
+				
+				
 				cal = Calendar.getInstance();
 				cal.set(Calendar.DAY_OF_WEEK, (dayOfWeek == 0) ? Calendar.MONDAY : Calendar.TUESDAY);
 				cal.set(Calendar.HOUR_OF_DAY, timeOfDay);
+				cal.set(Calendar.MINUTE, 0);
 				day1 = cal.getTime();
 				
-				cal = Calendar.getInstance();
-				cal.set(Calendar.DAY_OF_WEEK, (dayOfWeek == 0) ? Calendar.WEDNESDAY : Calendar.THURSDAY);
-				cal.set(Calendar.HOUR_OF_DAY, timeOfDay);
-				day2 = cal.getTime();
+				Calendar cal1 = Calendar.getInstance();
+				cal1.set(Calendar.DAY_OF_WEEK, (dayOfWeek == 0) ? Calendar.WEDNESDAY : Calendar.THURSDAY);
+				cal1.set(Calendar.HOUR_OF_DAY, timeOfDay);				
+				cal1.set(Calendar.MINUTE, 0);
+				day2 = cal1.getTime();
 				
+				
+				
+		//		System.out.println(day1.getDay() + ", " + day2.getDay());
+			
 				
 				Teacher selectedTeacher = null;
 				
@@ -118,6 +261,7 @@ public class DatabaseManager {
 					s.addMeetingTime(day1);
 					s.addMeetingTime(day2);
 					s.setCRN((int)(Math.random()*9999) + 10000);
+					s.setCourseName(c.getDepartment());
 					s.setCourseNumber(c.getCourseNumber());
 					
 					cal = Calendar.getInstance();

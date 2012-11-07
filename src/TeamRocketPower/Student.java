@@ -18,6 +18,8 @@ public class Student {
      */
     private ArrayList TentativeCourses;
 
+    private ArrayList RegisteredCourses;
+    
     /**
      */
     private String ProgramOfStudy;
@@ -31,6 +33,7 @@ public class Student {
     	TentativeCourses = new ArrayList();
     	ProgressCourses = new ArrayList();
     	CompletedCourses = new ArrayList();
+    	RegisteredCourses = new ArrayList();
     }
     
     public Student(String aString)
@@ -38,7 +41,7 @@ public class Student {
     	TentativeCourses = new ArrayList();
     	ProgressCourses = new ArrayList();
     	CompletedCourses = new ArrayList();
-    	
+    	RegisteredCourses = new ArrayList();
     	String list[] = aString.split("\n");
     	this.setProgram(list[2]);
     	this.setName(list[0]);
@@ -83,11 +86,39 @@ public class Student {
     			}
     		}
     	}
+    	newPos = position++;
+    	for (int x = 0; x < Integer.parseInt(list[newPos]); x++)
+    	{
+    		int crn = Integer.parseInt(list[position++]);
+    		for (int k = 0; k < Main.myDB.sections.size(); k++)
+    		{
+    			Section s = (Section)Main.myDB.sections.get(k);
+    			if (s.getCRN() == crn)
+    			{
+    				RegisteredCourses.add(s);
+    			}
+    		}
+    	}
     }
     
     public int getStudentID()
     {
     	return StudentID;
+    }
+    
+    public ArrayList getProgressCourses()
+    {
+    	return this.ProgressCourses;
+    }
+    
+    public ArrayList getTentativeCourses()
+    {
+    	return this.TentativeCourses;
+    }
+    
+    public ArrayList getCompletedCourses()
+    {
+    	return this.CompletedCourses;
     }
     
     public void setName(String aString)
@@ -101,6 +132,11 @@ public class Student {
     public void setProgram(String aProgram)
     {
     	ProgramOfStudy = aProgram;
+    }
+    
+    public ArrayList getRegisteredClasses()
+    {
+    	return RegisteredCourses;
     }
        
     public String toString()
@@ -130,7 +166,13 @@ public class Student {
     		Section s = (Section)TentativeCourses.get(x);
     		myString += s.getCRN();
     	}
-    	
+    	myString += "\n" + RegisteredCourses.size();
+    	for (int x = 0; x < RegisteredCourses.size(); x++)
+    	{
+    		myString += "\n";
+    		Section s = (Section)RegisteredCourses.get(x);
+    		myString += s.getCRN();
+    	}
     	
     	return myString;
     }
