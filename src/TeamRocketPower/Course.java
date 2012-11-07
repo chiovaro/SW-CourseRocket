@@ -162,7 +162,22 @@ public class Course{
     public void setCreditHours(int aNumber)
     {
     	CreditHours = aNumber;
-    }   
+    }
+    
+    public ArrayList getPrereqList()
+    {
+    	return PrereqList;
+    }
+    
+    public String getCourseDescription()
+    {
+    	return CourseDescription;
+    }
+    
+    public int getCreditHours()
+    {
+    	return CreditHours;
+    }
     
     public String toString()
     {

@@ -69,8 +69,9 @@ public class Section{
 		CourseNumber = Integer.parseInt(fields[3]);
 		FinalDate = new Date(Long.parseLong(fields[4]));
 		ClassDuration = Integer.parseInt(fields[5]);
-		int pos = 7;
-		for (int x = 0; x < Integer.parseInt(fields[6]); x++)
+		CourseName = fields[6];
+		int pos = 8;
+		for (int x = 0; x < Integer.parseInt(fields[7]); x++)
 		{
 			RegisteredStudents.add(Integer.parseInt(fields[pos++]));
 		}
@@ -113,6 +114,11 @@ public class Section{
 				teach += "\n" + fields[pos++];
 		}
 		TeacherReview = new RateMyProfessor(teach);
+	}
+	
+	public int getTeacherID()
+	{
+		return TeacherID;
 	}
 	
 	public ArrayList getMeetingTimes()
@@ -223,7 +229,7 @@ public class Section{
 		String output = "";
 		output += CRN + "\n" + TeacherID + "\n" + MaxCapacity
 				+ "\n" + CourseNumber + "\n" + FinalDate.getTime()
-				+ "\n" + ClassDuration + "\n";
+				+ "\n" + ClassDuration + "\n" + this.CourseName + "\n";
 		
 		output += RegisteredStudents.size();
 		for (int k = 0; k < RegisteredStudents.size(); k++)
