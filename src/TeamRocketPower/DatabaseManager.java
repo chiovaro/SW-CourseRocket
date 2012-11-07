@@ -22,11 +22,11 @@ public class DatabaseManager {
 		teachers = new ArrayList();
 		students = new ArrayList();
 		sections = new ArrayList();
-		parseCourses();
-		parseTeachers();
-		parseStudents();
-		generateClasses();
-		saveDB();
+		//parseCourses();
+		//parseTeachers();
+		//parseStudents();
+		//generateClasses();
+		//saveDB();
 		loadDB();
 		for (int x = 0; x < sections.size(); x++)
 		{
@@ -368,5 +368,25 @@ public class DatabaseManager {
 		}
 		catch (IOException e)
 		{}
+	}
+	
+	public ArrayList getCourseList()
+	{
+		return classes;
+	}
+	
+	public ArrayList getSectionList()
+	{
+		return sections;
+	}
+	
+	public ArrayList getTeachers()
+	{
+		return teachers;
+	}
+	
+	public ArrayList getStudents()
+	{
+		return students;
 	}
 }
