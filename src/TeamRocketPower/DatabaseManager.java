@@ -24,12 +24,12 @@ public class DatabaseManager {
 		teachers = new ArrayList();
 		students = new ArrayList();
 		sections = new ArrayList();
-		//parseCourses();
-		//parseTeachers();
-		//parseStudents();
-		//generateClasses();
-		//saveDB();
-		loadDB();
+		parseCourses();
+		parseTeachers();
+		parseStudents();
+		generateClasses();
+		saveDB();
+		//loadDB();
 		for (int x = 0; x < sections.size(); x++)
 		{
 			Section s = (Section)sections.get(x);

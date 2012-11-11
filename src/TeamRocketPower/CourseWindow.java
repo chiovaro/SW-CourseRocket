@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
@@ -29,6 +30,8 @@ import javax.swing.Box;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
+import java.awt.Point;
+
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.MouseAdapter;
@@ -46,6 +49,10 @@ import javax.swing.JTextArea;
 import javax.swing.border.MatteBorder;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
+import javax.swing.JRadioButton;
 
 public class CourseWindow {
 
@@ -71,13 +78,38 @@ public class CourseWindow {
 	ArrayList registeredClasses;
 	
 	ArrayList completeClassLabels;
+	ArrayList hiddenByExcludes;
+	
 	JScrollPane sectionInfoScroll;
 	
 	Section selectedSection;
+	
+	JTextPane classInfoPane;
 
+	
+	JCheckBox mondayExclude;
+	JCheckBox tuesdayExclude;
+	JCheckBox wednesdayExclude;
+	JCheckBox thursdayExclude;
+	JCheckBox fridayExclude;
+	
+	DefaultListModel sectionsModel;
+	
+	boolean weekdayExclude[];
+	boolean hourlyExclude[];
+	
 	public CourseWindow(Main aMain) {
 		this.main = aMain;
 		initialize();
+	}
+	
+	public void loadStudent(Student s)
+	{
+		tentativeListClasses = s.getTentativeCourses();
+		completedListClasses = s.getCompletedCourses();
+		progressClasses = s.getProgressCourses();
+		registeredClasses = s.getRegisteredClasses();
+		this.initAllSectionsFromView(true);
 	}
 
 	/**
@@ -90,10 +122,22 @@ public class CourseWindow {
 		tentativeListClasses = new ArrayList();
 		completedListClasses = new ArrayList();
 		progressClasses = new ArrayList();
-		currentStudent = (Student)main.myDB.getStudents().get(0);
+		hiddenByExcludes = new ArrayList();
+		sectionsModel = new DefaultListModel();
 		
+		
+		weekdayExclude = new boolean[Calendar.FRIDAY+1];
+		hourlyExclude = new boolean[25];
+		for (int x = 0; x < Calendar.FRIDAY+1; x++)
+		{
+			weekdayExclude[x] = false;
+		}
+		
+		currentStudent = (Student)main.myDB.getStudents().get(0);
 		weeklySchedule = new ArrayList[5][12];
 		this.weeklyScheduleSections = new ArrayList[5][12];
+		
+		
 		
 		for (int x = 0; x < 5; x++)
 			for (int y = 0; y < 12; y++){
@@ -124,78 +168,147 @@ public class CourseWindow {
 		}
 		frame.getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
 		drawPanel = new JPanel();
-		drawPanel.setPreferredSize(new Dimension(500, 900));
+		drawPanel.setPreferredSize(new Dimension(500, 600));
 		scrollPane = new JScrollPane(drawPanel);
-		scrollPane.setPreferredSize(new Dimension(502, 900));
+		scrollPane.setPreferredSize(new Dimension(502, 600));
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		frame.getContentPane().add(scrollPane);
 		//scrollPane.setLayout(null);
 		drawPanel.setLayout(null);
 		
 		JTextPane txtpnWednesday = new JTextPane();
-		txtpnWednesday.setBounds(346, 31, 63, 20);
+		txtpnWednesday.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				weekdayExclude[Calendar.WEDNESDAY] = !weekdayExclude[Calendar.WEDNESDAY];
+				JTextPane pane = (JTextPane)arg0.getSource();
+				if (weekdayExclude[Calendar.WEDNESDAY])
+					pane.setBackground(Color.BLACK);
+				else
+					pane.setBackground(Color.WHITE);
+				updateSectionExcludes();
+				repaint();
+			}
+		});
+		txtpnWednesday.setBounds(342, 27, 69, 20);
 		drawPanel.add(txtpnWednesday);
 		txtpnWednesday.setEditable(false);
 		txtpnWednesday.setText("Wednesday");
 		
 		JButton btnUpdate = new JButton("Update");
-		btnUpdate.setBounds(10, 104, 89, 23);
+		btnUpdate.setBounds(355, 2, 89, 23);
 		drawPanel.add(btnUpdate);
 		
 		JLabel lblDepartment = new JLabel("Department");
-		lblDepartment.setBounds(10, 11, 72, 14);
+		lblDepartment.setBounds(10, 6, 72, 14);
 		drawPanel.add(lblDepartment);
 		departments = new JComboBox();
-		departments.setBounds(10, 31, 104, 20);
+		departments.setBounds(79, 3, 104, 20);
 		drawPanel.add(departments);
 		departments.setModel(new DefaultComboBoxModel(classes));
 		
 		JTextPane txtpnFriday = new JTextPane();
-		txtpnFriday.setBounds(492, 31, 63, 20);
+		txtpnFriday.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				weekdayExclude[Calendar.FRIDAY] = !weekdayExclude[Calendar.FRIDAY];
+				JTextPane pane = (JTextPane)arg0.getSource();
+				if (weekdayExclude[Calendar.FRIDAY])
+					pane.setBackground(Color.BLACK);
+				else
+					pane.setBackground(Color.WHITE);
+				updateSectionExcludes();
+				repaint();
+			}
+		});
+		txtpnFriday.setBounds(488, 27, 63, 20);
 		drawPanel.add(txtpnFriday);
 		txtpnFriday.setEditable(false);
 		txtpnFriday.setText("Friday");
 		
 		JTextPane txtpnThursday = new JTextPane();
-		txtpnThursday.setBounds(419, 31, 63, 20);
+		txtpnThursday.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				weekdayExclude[Calendar.THURSDAY] = !weekdayExclude[Calendar.THURSDAY];
+				JTextPane pane = (JTextPane)arg0.getSource();
+				if (weekdayExclude[Calendar.THURSDAY])
+					pane.setBackground(Color.BLACK);
+				else
+					pane.setBackground(Color.WHITE);
+				updateSectionExcludes();
+				repaint();
+			}
+		});
+		txtpnThursday.setBounds(415, 27, 63, 20);
 		drawPanel.add(txtpnThursday);
 		txtpnThursday.setEditable(false);
 		txtpnThursday.setText("Thursday");
 		
 		JTextPane txtpnTuesday = new JTextPane();
-		txtpnTuesday.setBounds(277, 31, 63, 20);
+		txtpnTuesday.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				weekdayExclude[Calendar.TUESDAY] = !weekdayExclude[Calendar.TUESDAY];
+				JTextPane pane = (JTextPane)arg0.getSource();
+				if (weekdayExclude[Calendar.TUESDAY])
+					pane.setBackground(Color.BLACK);
+				else
+					pane.setBackground(Color.WHITE);
+				updateSectionExcludes();
+				repaint();
+			}
+		});
+		txtpnTuesday.setBounds(273, 27, 63, 20);
 		drawPanel.add(txtpnTuesday);
 		txtpnTuesday.setEditable(false);
 		txtpnTuesday.setText("Tuesday");
 		
 		JTextPane txtpnMonday = new JTextPane();
-		txtpnMonday.setBounds(205, 31, 63, 20);
+		txtpnMonday.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				weekdayExclude[Calendar.MONDAY] = !weekdayExclude[Calendar.MONDAY];
+				JTextPane pane = (JTextPane)arg0.getSource();
+				if (weekdayExclude[Calendar.MONDAY])
+					pane.setBackground(Color.BLACK);
+				else
+					pane.setBackground(Color.WHITE);
+				updateSectionExcludes();
+				repaint();				
+			}
+		});
+		txtpnMonday.setBounds(201, 27, 63, 20);
 		drawPanel.add(txtpnMonday);
 		txtpnMonday.setEditable(false);
 		txtpnMonday.setText("Monday");
 		
 		JLabel lblSection = new JLabel("Sections");
-		lblSection.setBounds(10, 138, 57, 14);
+		lblSection.setBounds(10, 31, 57, 14);
 		drawPanel.add(lblSection);
 		
 		courses = new JComboBox();
-		courses.setBounds(10, 73, 104, 20);
+		
+		
+		
+		courses.setBounds(241, 2, 104, 20);
 		drawPanel.add(courses);
 		
 		JLabel lblCourse = new JLabel("Course");
-		lblCourse.setBounds(10, 57, 46, 14);
+		lblCourse.setBounds(193, 5, 46, 14);
 		drawPanel.add(lblCourse);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(10, 152, 89, 84);
+		scrollPane_1.setBounds(10, 45, 89, 84);
 		drawPanel.add(scrollPane_1);
-		sectionsList = new JList();
+		sectionsList = new JList(sectionsModel);
 		sectionsList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent arg0) {
 				JList aList = (JList)arg0.getSource();
 				if (aList.getSelectedIndex() != -1)
 				{
-					setInfoForCRN(Integer.parseInt(aList.getSelectedValue().toString()));
+					sectionInfo.setText(getInfoForCRN(Integer.parseInt(aList.getSelectedValue().toString())));
+					sectionInfo.setCaretPosition(0);
 				}
 			}
 		});
@@ -203,21 +316,21 @@ public class CourseWindow {
 		scrollPane_1.setViewportView(sectionsList);
 		
 		JLabel lblTentativeSchedule = new JLabel("Tentative Schedule");
-		lblTentativeSchedule.setBounds(10, 286, 119, 14);
+		lblTentativeSchedule.setBounds(10, 179, 119, 14);
 		drawPanel.add(lblTentativeSchedule);
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(10, 300, 89, 84);
+		scrollPane_2.setBounds(10, 193, 89, 84);
 		drawPanel.add(scrollPane_2);
 		tentativeList = new JList();
 		scrollPane_2.setViewportView(tentativeList);
 		
 		JLabel lblRegisteredClasses = new JLabel("Registered Classes");
-		lblRegisteredClasses.setBounds(10, 453, 119, 14);
+		lblRegisteredClasses.setBounds(10, 346, 119, 14);
 		drawPanel.add(lblRegisteredClasses);
 		
 		JScrollPane scrollPane_3 = new JScrollPane();
-		scrollPane_3.setBounds(10, 470, 89, 84);
+		scrollPane_3.setBounds(10, 363, 89, 84);
 		drawPanel.add(scrollPane_3);
 		
 		registeredList = new JList();
@@ -260,7 +373,7 @@ public class CourseWindow {
 									tentativeList.setListData(myList);
 									removeAllSectionsFromView();
 									tentativeListClasses.add(s);
-									initAllSectionsFromView();
+									initAllSectionsFromView(true);
 								}
 							}
 							else
@@ -270,9 +383,10 @@ public class CourseWindow {
 						}
 					}
 				}
+				main.myDB.saveDB();
 			}
 		});
-		btnSaveSection.setBounds(10, 247, 119, 23);
+		btnSaveSection.setBounds(10, 140, 119, 23);
 		drawPanel.add(btnSaveSection);
 		
 		JButton btnRegister = new JButton("Register");
@@ -302,7 +416,8 @@ public class CourseWindow {
 								removeAllSectionsFromView();
 								currentStudent.getTentativeCourses().remove(s);
 								currentStudent.getRegisteredClasses().add(s);
-								registeredClasses.add(s);
+								if (!registeredClasses.contains(s))
+									registeredClasses.add(s);
 								tentativeListClasses.remove(s);
 								String[] myList = new String[currentStudent.getTentativeCourses().size()];
 								int pos = 0;
@@ -319,19 +434,21 @@ public class CourseWindow {
 								for (int y = 0; y < currentStudent.getRegisteredClasses().size(); y++)
 								{
 									Section s1 = (Section)currentStudent.getRegisteredClasses().get(y);
+									
 									myList[pos++] = "" + s1.getCRN();
 								}
 								registeredList.removeAll();
 								registeredList.setListData(myList);
 								
-								initAllSectionsFromView();
+								initAllSectionsFromView(true);
 							}
 						}
 					}
 				}
+				main.myDB.saveDB();
 			}
 		});
-		btnRegister.setBounds(10, 395, 89, 23);
+		btnRegister.setBounds(10, 288, 89, 23);
 		drawPanel.add(btnRegister);
 		
 		JButton btnDropClass = new JButton("Drop Class");
@@ -349,7 +466,8 @@ public class CourseWindow {
 							removeAllSectionsFromView();
 							currentStudent.getRegisteredClasses().remove(s);
 							currentStudent.getTentativeCourses().add(s);
-							tentativeListClasses.add(s);
+							if (!tentativeListClasses.contains(s))
+								tentativeListClasses.add(s);
 							registeredClasses.remove(s);
 							String[] myList = new String[currentStudent.getTentativeCourses().size()];
 							int pos = 0;
@@ -371,13 +489,14 @@ public class CourseWindow {
 							registeredList.removeAll();
 							registeredList.setListData(myList);
 							
-							initAllSectionsFromView();
+							initAllSectionsFromView(true);
 						}
 					}
 				}
+				main.myDB.saveDB();
 			}
 		});
-		btnDropClass.setBounds(10, 565, 104, 23);
+		btnDropClass.setBounds(10, 458, 104, 23);
 		drawPanel.add(btnDropClass);
 		
 		JButton btnRemove = new JButton("Remove");
@@ -404,10 +523,11 @@ public class CourseWindow {
 					}
 					
 				}
-				initAllSectionsFromView();
+				initAllSectionsFromView(true);
+				main.myDB.saveDB();
 			}
 		});
-		btnRemove.setBounds(10, 419, 89, 23);
+		btnRemove.setBounds(10, 312, 89, 23);
 		drawPanel.add(btnRemove);
 		
 		sectionInfoScroll = new JScrollPane();
@@ -428,31 +548,18 @@ public class CourseWindow {
 				{
 					if (!courses.getSelectedItem().toString().equalsIgnoreCase(""))
 					{
-						int hits = 0;
+						sectionsModel.removeAllElements();
 						for (int x = 0; x < main.myDB.getSectionList().size(); x++)
 						{
 							
 							Section s = (Section)main.myDB.getSectionList().get(x);
-							if (courses.getSelectedItem().toString().equalsIgnoreCase(departments.getSelectedItem() + " " + s.getCourseNumber()))
-							{
-								hits++;
-							}
-						}
-						String addCourses[] = new String[hits];
-						sectionsList.removeAll();
-						int pos = 0;
-						for (int x = 0; x < main.myDB.getSectionList().size(); x++)
-						{
 							
-							Section s = (Section)main.myDB.getSectionList().get(x);
-							if (courses.getSelectedItem().toString().equalsIgnoreCase(departments.getSelectedItem() + " " + s.getCourseNumber()))
+							if (sectionDoesntInterfereWithExcludes(s) && courses.getSelectedItem().toString().equalsIgnoreCase(departments.getSelectedItem() + " " + s.getCourseNumber()))
 							{
-								addCourses[pos] = "" + s.getCRN();
-								pos++;
+								sectionsModel.addElement("" + s.getCRN());
 							}
-						}
-						sectionsList.removeAll();
-						sectionsList.setListData(addCourses);
+						
+						}						
 					}
 				}
 			}
@@ -490,21 +597,53 @@ public class CourseWindow {
 						if (courses.getSelectedItem() != "")
 						{
 							String courseInfo[] = courses.getSelectedItem().toString().split(" ");
-							if (s.getCourseName().equalsIgnoreCase(courseInfo[0]) && s.getCourseNumber() == Integer.parseInt(courseInfo[1]))
+							
+							boolean add = true;
+							for (int r = 0; r < s.getMeetingTimes().size(); r++)
+							{
+								Date da = (Date)s.getMeetingTimes().get(r);
+								if (hourlyExclude[(da.getHours() > 12) ? da.getHours()-12 : da.getHours()])
+								{
+									add = false;
+								}
+								//System.out.println(da.getDay() + ":" + Calendar.MONDAY);
+								if (weekdayExclude[da.getDay()+1])
+								{
+									add = false;
+								}
+							}
+							
+							if (add && s.getCourseName().equalsIgnoreCase(courseInfo[0]) && s.getCourseNumber() == Integer.parseInt(courseInfo[1]))
 							{
 								searchedClasses.add(s);
 							}
 						}
 						else
 						{
-							if (s.getCourseName().equalsIgnoreCase((String) departments.getSelectedItem()))
+							boolean add = true;
+							for (int r = 0; r < s.getMeetingTimes().size(); r++)
+							{
+								Date da = (Date)s.getMeetingTimes().get(r);
+								if (hourlyExclude[(da.getHours() > 12) ? da.getHours()-12 : da.getHours()])
+								{
+									add = false;
+								}
+								//System.out.println(da.getDay() + ":" + Calendar.MONDAY);
+								if (weekdayExclude[da.getDay()-1])
+								{
+									add = false;
+								}
+							}
+							if (add && s.getCourseName().equalsIgnoreCase((String) departments.getSelectedItem()))
 							{
 								searchedClasses.add(s);
 							}
 						}
 					}
 				}
-				initAllSectionsFromView();
+				
+				initAllSectionsFromView(true);
+				repaint();
 			}
 		});
 		
@@ -519,6 +658,21 @@ public class CourseWindow {
 			for (int y = 29+25; y < 29 + (45*12); y += 45)
 			{
 				JTextPane test = new JTextPane();
+				test.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent arg0) {
+						JTextPane pane = (JTextPane)arg0.getSource();
+						String times[] = pane.getText().split(":");
+						int time = Integer.parseInt(times[0]);
+						hourlyExclude[time] = !hourlyExclude[time];
+						if (hourlyExclude[time])
+							pane.setBackground(Color.BLACK);
+						else
+							pane.setBackground(Color.WHITE);
+						updateSectionExcludes();
+						repaint();
+					}
+				});
 				test.setText(time + ":00");
 				test.setBounds(x, y, 44, 40);
 				bottom = y+40;
@@ -529,7 +683,7 @@ public class CourseWindow {
 					time = 1;
 			}
 		}
-		
+		loadStudent(currentStudent);
 		this.calendarHeight = bottom-top;
 		repaint();
 	}
@@ -555,8 +709,6 @@ public class CourseWindow {
 			}
 		
 		completeClassLabels.removeAll(sects);
-		repaint();
-		
 	}
 	
 	public void updateViewWithSections(ArrayList sects, Color aColor)
@@ -603,12 +755,42 @@ public class CourseWindow {
 					test.setEditable(false);
 					test.addMouseListener(new MouseAdapter() {
 						@Override
+						public void mouseExited(MouseEvent arg0) {
+							drawPanel.remove(classInfoPane);
+							repaint();
+						}
+					});
+					test.addMouseMotionListener(new MouseMotionAdapter() {
+						@Override
+						public void mouseMoved(MouseEvent arg0) {
+							if (classInfoPane == null)
+								classInfoPane = new JTextPane();
+							
+							drawPanel.remove(classInfoPane);
+							JTextPane aPane = (JTextPane)arg0.getSource();
+							Course c = getCourseForCRN(Integer.parseInt(aPane.getText().toString()));
+							
+							
+							classInfoPane.setText(c.getCourseName());
+							classInfoPane.setBounds(arg0.getX()+aPane.getBounds().x+10, arg0.getY()+aPane.getBounds().y, 120, 50);
+							classInfoPane.setEditable(false);
+							classInfoPane.setCaretPosition(0);
+							
+							drawPanel.add(classInfoPane, 0);
+							//frame.repaint();
+							
+							repaint();
+							
+						}
+					});
+					test.addMouseListener(new MouseAdapter() {
+						@Override
 						public void mouseClicked(MouseEvent arg0) 
 						{
 							drawPanel.remove((Component)arg0.getSource());
-							drawPanel.add((Component)arg0.getSource());
+							drawPanel.add((Component)arg0.getSource(), 0);
 							
-							
+							JTextPane aPane = (JTextPane)arg0.getSource();
 							Section s = null;
 							int j=0, k=0;
 							
@@ -629,17 +811,17 @@ public class CourseWindow {
 							
 							if (s != null)
 							{
-								ListModel model = sectionsList.getModel();
 								
-								for (int x = 0; x < model.getSize(); x++)
+								for (int x = 0; x < sectionsModel.getSize(); x++)
 								{
-									if (Integer.parseInt((String)model.getElementAt(x)) == s.getCRN())
+									
+									if (Integer.parseInt(sectionsModel.getElementAt(x).toString()) == s.getCRN())
 									{
 										sectionsList.setSelectedIndex(x);
 									}
 								}
 								
-								model = tentativeList.getModel();
+								ListModel model = tentativeList.getModel();
 								
 								for (int x = 0; x < model.getSize(); x++)
 								{
@@ -660,9 +842,10 @@ public class CourseWindow {
 								}
 							}
 							
+							
 							for (int z = 0; z < weeklySchedule[j][k].size(); z++)
 							{
-											
+								JTextPane aPane2 = (JTextPane)weeklySchedule[j][k].get(z);
 								if (weeklySchedule[j][k].get(z) != arg0.getSource())
 								{
 									drawPanel.remove((Component)weeklySchedule[j][k].get(z));
@@ -670,9 +853,28 @@ public class CourseWindow {
 								}
 							}
 							
+							for (int x = 0; x < 5; x++)
+								for (int y = 0; y < 12; y++)
+								{
+									for (int z = 0; z < weeklySchedule[x][y].size(); z++)
+									{
+										JTextPane aPane2 = (JTextPane)weeklySchedule[x][y].get(z);
+										if (aPane.getText().equalsIgnoreCase(aPane2.getText())
+												&& weeklySchedule[x][y].get(z) != arg0.getSource())
+										{
+											drawPanel.remove((Component)weeklySchedule[x][y].get(z));
+											drawPanel.add((Component)weeklySchedule[x][y].get(z), 0);
+										}
+									}
+								}
+							
+							
+							
 
 							selectedSection = s;
-							setInfoForCRN(s.getCRN());
+							sectionInfo.setText(getInfoForCRN(s.getCRN()));
+							sectionInfo.setCaretPosition(0);
+							
 							repaint();
 						}
 					});
@@ -684,7 +886,6 @@ public class CourseWindow {
 				}
 			}
 		}
-		repaint();
 	}
 	
 	public void removeAllSectionsFromView()
@@ -694,9 +895,11 @@ public class CourseWindow {
 		removeSectionsFromView(completedListClasses);
 		removeSectionsFromView(registeredClasses);
 		removeSectionsFromView(progressClasses);
+		this.hiddenByExcludes.removeAll(hiddenByExcludes);
+		repaint();
 	}
 	
-	public void initAllSectionsFromView()
+	public void initAllSectionsFromView(boolean shouldRepaint)
 	{
 		updateViewWithSections(completedListClasses, Color.green);
 		updateViewWithSections(progressClasses, Color.blue);
@@ -727,15 +930,108 @@ public class CourseWindow {
 		updateViewWithSections(collisions, Color.red);
 		updateViewWithSections(tentativeListClasses, Color.yellow);		
 		updateViewWithSections(searchedClasses, Color.gray);
+		if (shouldRepaint)
+			repaint();
+	}
+	
+	
+	
+	/**
+	 * 
+	 */
+	public void updateSectionExcludes()
+	{
+		ArrayList remove = new ArrayList();
+		this.removeSectionsFromView(searchedClasses);
+		searchedClasses.addAll(hiddenByExcludes);
+		for (int x = 0; x < hiddenByExcludes.size(); x++)
+		{
+			Section s = (Section)hiddenByExcludes.get(x);
+			sectionsModel.addElement(s.getCRN());
+		}
+		hiddenByExcludes.removeAll(hiddenByExcludes);
+		this.initAllSectionsFromView(false);
+		for (int x = 0; x < searchedClasses.size(); x++)
+		{
+			Section s = (Section)searchedClasses.get(x);
+			if (!sectionDoesntInterfereWithExcludes(s) 
+					&& !this.currentStudent.getProgressCourses().contains(s)
+					&& !this.currentStudent.getRegisteredClasses().contains(s)
+					&& !this.currentStudent.getTentativeCourses().contains(s))
+			{
+				if (!remove.contains(s))
+					remove.add(s);
+				
+				for (int y = 0; y < sectionsModel.getSize(); y++)
+				{
+					String text = sectionsModel.getElementAt(y).toString();
+					if (Integer.parseInt(text) == s.getCRN())
+					{
+						sectionsModel.removeElementAt(y);
+					}
+				}
+			}
+		}
+		hiddenByExcludes.addAll(remove);
+		if (remove.size() > 0)
+			this.removeSectionsFromView(remove);
+		
+		
 	}
 	
 	public void repaint()
 	{
+		
 		this.drawPanel.setPreferredSize(drawPanel.getPreferredSize());
 		frame.repaint();
 	}
 	
-	public String setInfoForCRN(int aCRN)
+	public Course getCourseForCRN(int aCRN)
+	{
+		Section s = null;
+		for (int x = 0; x < main.myDB.getSectionList().size(); x++)
+		{
+			Section aSec = (Section)main.myDB.getSectionList().get(x);
+			if (aSec.getCRN() == aCRN)
+			{
+				s = aSec;
+			}
+		}
+		if (s != null)
+		{
+			for (int l = 0; l < main.myDB.getCourseList().size(); l++)
+			{
+				Course c = (Course)main.myDB.getCourseList().get(l);
+				if (c.getDepartment().equalsIgnoreCase(s.getCourseName())
+						&& c.getCourseNumber() == s.getCourseNumber())
+				{
+					return c;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public boolean sectionDoesntInterfereWithExcludes(Section s)
+	{
+		boolean add = true;
+		for (int r = 0; r < s.getMeetingTimes().size(); r++)
+		{
+			Date da = (Date)s.getMeetingTimes().get(r);
+			if (hourlyExclude[(da.getHours() > 12) ? da.getHours()-12 : da.getHours()])
+			{
+				add = false;
+			}
+			
+			if (weekdayExclude[da.getDay()+1])
+			{
+				add = false;
+			}
+		}
+		return add;
+	}
+	
+	public String getInfoForCRN(int aCRN)
 	{
 		String text = "";
 		Section s = null;
@@ -831,7 +1127,6 @@ public class CourseWindow {
 					text += c.getCreditHours() + " Credit Hours.";
 					
 					
-					sectionInfo.setText(text);
 					//System.out.println(sectionInfoScroll.getVerticalScrollBar().getValue());
 					
 				}
