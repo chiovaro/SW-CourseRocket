@@ -131,6 +131,12 @@ Computer Graphics Imaging.
 
 Study the theories, techniques and tools for creating 3D graphics content. Topics include 3D modeling, camera, lighting, materials, texture mapping, physics based modeling, basic animation, and rendering techniques (such as tracing and radiosity). 
 4.000 Credit hours 
+4870
+HONORS THESIS: RESEARCH
+Honors Thesis: Research. 
+Prerequisites: Consent of the instructor, Honors Program director. 
+Research of honors thesis or project. 
+3.000 Credit hours 
 4880
 HONORS THESIS: WRITING
 Honors Thesis: Writing. 

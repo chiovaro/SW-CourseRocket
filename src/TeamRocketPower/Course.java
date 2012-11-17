@@ -73,12 +73,18 @@ public class Course{
     	String[] list = courseCredits.split(" ");
     	setCreditHours((int)Float.parseFloat(list[0]));
     	coursePrereqs = coursePrereqs.replaceAll("Prerequisites: ", "");
+    	coursePrereqs = coursePrereqs.replaceAll("Prerequisites:", "");
     	//System.out.println(coursePrereqs);
     	list = coursePrereqs.split(", ");
     	for (int k = 0; k < list.length; k++)
     	{
     		//System.out.println(list[k]);
-    		addPrereq(list[k]);
+    		String splits[] = list[k].split("or");
+    		for (int l = 0; l < splits.length; l++)
+    		{
+    			if (splits[l].trim().length() > 0)
+    				addPrereq(splits[l].trim());
+    		}
     	}
 
     	
@@ -146,7 +152,9 @@ public class Course{
     
     public void addPrereq(String aPrereq)
     {
-    	PrereqList.add(aPrereq);
+    		String splits[] = aPrereq.split("or");
+    		for (int l = 0; l < splits.length; l++)
+    			PrereqList.add(splits[l].trim());
     }
     
     public void addBook(String aBook)
@@ -186,10 +194,12 @@ public class Course{
     	for (int x = 0; x < PrereqList.size(); x++)
     	{
     		if (x == PrereqList.size()-1)
-    			sendString += PrereqList.get(x) + "\n";
+    			sendString += PrereqList.get(x);
     		else
     			sendString += PrereqList.get(x) + ", ";
     	}    	
+    	sendString += "\n";
+    	
     	sendString += CourseDescription + "\n" + CreditHours + " Credit Hours\n";	
     	
     	sendString += sections.size();

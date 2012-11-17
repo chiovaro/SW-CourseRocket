@@ -113,6 +113,8 @@ public class RateMyProfessor {
     	CourseName = aName;
     }
     
+  
+    
     public void addNewLikability(float aLikability)
     {
     	if (Likability == 0)

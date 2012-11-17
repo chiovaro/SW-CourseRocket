@@ -126,6 +126,11 @@ public class Section{
 		return MeetingTimes;
 	}
 	
+	public RateMyProfessor getTeacherReview()
+	{
+		return TeacherReview;
+	}
+	
 	public int getClassDuration()
 	{
 		return ClassDuration;
@@ -224,6 +229,11 @@ public class Section{
 		CRN = aCRN;
 	}
 	
+	public int getMaxCapacity()
+	{
+		return MaxCapacity;
+	}
+	
 	public String toString()
 	{
 		String output = "";
@@ -269,11 +279,21 @@ public class Section{
 		return output;
 	}
 	
+	public ArrayList getRegisteredStudentsList()
+	{
+		return RegisteredStudents;
+	}
+	
+	public ArrayList getWaitingStudentsList()
+	{
+		return WaitingList;
+	}
+	
 	public void expandArrayListConnections()
 	{
 		for (int x = 0; x < RegisteredStudents.size(); x++)
 		{
-			int studentID = Integer.parseInt((String)RegisteredStudents.get(x));
+			int studentID = Integer.parseInt(RegisteredStudents.get(x).toString());
 			for (int k = 0; k < Main.myDB.students.size(); k++)
 			{
 				Student s = (Student)Main.myDB.students.get(k);
@@ -288,7 +308,7 @@ public class Section{
 	
 		for (int x = 0; x < WaitingList.size(); x++)
 		{
-			int studentID = Integer.parseInt((String)WaitingList.get(x));
+			int studentID = Integer.parseInt(WaitingList.get(x).toString());
 			for (int k = 0; k < Main.myDB.students.size(); k++)
 			{
 				Student s = (Student)Main.myDB.students.get(k);

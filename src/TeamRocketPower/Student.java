@@ -28,8 +28,11 @@ public class Student {
     
     private int StudentID;
     
+    private ArrayList completedRatings;
+    
     public Student()
     {
+    	completedRatings = new ArrayList();
     	TentativeCourses = new ArrayList();
     	ProgressCourses = new ArrayList();
     	CompletedCourses = new ArrayList();
@@ -38,6 +41,7 @@ public class Student {
     
     public Student(String aString)
     {
+    	completedRatings = new ArrayList();
     	TentativeCourses = new ArrayList();
     	ProgressCourses = new ArrayList();
     	CompletedCourses = new ArrayList();
@@ -99,11 +103,44 @@ public class Student {
     			}
     		}
     	}
+    	newPos = position++;
+    	for (int x = 0; x < Integer.parseInt(list[newPos]); x++)
+    	{
+    		String finished = list[position++];
+    		completedRatings.add(finished);
+    	}
+    }
+    
+    public void expandRatings()
+    {
+    	ArrayList add = new ArrayList();
+    	ArrayList remove = new ArrayList();
+    	for (int x = 0; x < completedRatings.size(); x++)
+    	{
+    		String finished = completedRatings.get(x).toString();
+    		for (int y = 0; y < Main.myDB.sections.size(); y++)
+    		{
+    			Section s = (Section)Main.myDB.sections.get(y);
+    			if (s.getCRN() == Integer.parseInt(finished))
+    			{
+    				add.add(s);    				
+    				remove.add(finished);
+
+    			}
+    		}
+    	}
+    	completedRatings.addAll(add);
+    	completedRatings.removeAll(remove);
     }
     
     public int getStudentID()
     {
     	return StudentID;
+    }
+    
+    public ArrayList getCompletedRatings()
+    {
+    	return completedRatings;
     }
     
     public ArrayList getProgressCourses()
@@ -138,6 +175,7 @@ public class Student {
     {
     	return RegisteredCourses;
     }
+    
        
     public String toString()
     {
@@ -171,6 +209,13 @@ public class Student {
     	{
     		myString += "\n";
     		Section s = (Section)RegisteredCourses.get(x);
+    		myString += s.getCRN();
+    	}
+    	myString += "\n" + completedRatings.size();
+    	for (int x = 0; x < completedRatings.size(); x++)
+    	{
+    		myString += "\n";
+    		Section s = (Section)completedRatings.get(x);
     		myString += s.getCRN();
     	}
     	

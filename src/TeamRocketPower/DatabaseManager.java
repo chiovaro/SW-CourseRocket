@@ -24,20 +24,25 @@ public class DatabaseManager {
 		teachers = new ArrayList();
 		students = new ArrayList();
 		sections = new ArrayList();
-		parseCourses();
-		parseTeachers();
-		parseStudents();
-		generateClasses();
-		saveDB();
-		//loadDB();
+		//parseCourses();
+		//parseTeachers();
+		//parseStudents();
+		//generateClasses();
+		//saveDB();
+		loadDB();
 		for (int x = 0; x < sections.size(); x++)
 		{
 			Section s = (Section)sections.get(x);
 			s.expandArrayListConnections();
 		}
+		for (int x = 0; x < students.size(); x++)
+		{
+			Student s = (Student)students.get(x);
+			s.expandRatings();
+		}
 	}
 	
-	public boolean registrationPrereqTest(Student aStudent, Section aSection)
+	public String registrationPrereqTest(Student aStudent, Section aSection)
 	{
 		for (int x = 0; x < this.classes.size(); x++)
 		{
@@ -51,6 +56,7 @@ public class DatabaseManager {
 					String prereq = (String)c.getPrereqList().get(y);
 					if (!prereq.equalsIgnoreCase(""))
 					{
+						String error = "";
 						boolean passed = false;
 						for (int z = 0; z < aStudent.getCompletedCourses().size(); z++)
 						{
@@ -61,6 +67,8 @@ public class DatabaseManager {
 								passed = true;
 							}
 						}
+						
+						
 						for (int z = 0; z < aStudent.getProgressCourses().size(); z++)
 						{
 							Section s = (Section)aStudent.getProgressCourses().get(z);
@@ -70,9 +78,13 @@ public class DatabaseManager {
 								passed = true;
 							}
 						}
+						if (!passed)
+						{
+							error += "Prereq Error \n";
+						}
+						
 						
 						/*DELETE THIS ITS A HACK TO NOT HAVE REQS*/
-						System.out.println("HERE");
 						for (int z = 0; z < aStudent.getRegisteredClasses().size(); z++)
 						{
 							Section s = (Section)aStudent.getRegisteredClasses().get(z);
@@ -90,13 +102,24 @@ public class DatabaseManager {
 						
 						if (!passed)
 						{
-							return false;
+							return error;
 						}
 					}
 				}
 			}
 		}
-		return true;
+		return null;
+	}
+	
+	public Teacher getTeacherForID(int aID)
+	{
+		for (int x = 0; x < teachers.size(); x++)
+		{
+			Teacher t = (Teacher)teachers.get(x);
+			if (t.getTeacherID() == aID)
+				return t;
+		}
+		return null;
 	}
 	
 	public boolean classesCollide(Section s1, Section s2)
@@ -136,7 +159,7 @@ public class DatabaseManager {
 	}
 	
 	
-	public boolean checkAlreadyAdded(Student aStudent, Course c)
+	public String checkAlreadyAdded(Student aStudent, Course c)
 	{
 		for (int s = 0; s < aStudent.getRegisteredClasses().size(); s++)
 		{
@@ -150,24 +173,26 @@ public class DatabaseManager {
 					if (c.getDepartment().equalsIgnoreCase(c1.getDepartment())
 							&& c.getCourseNumber() == c1.getCourseNumber())
 					{
-						return true;
+						return "Already Registered For\n";
 					}
 				}
 			}
 		}
-		return false;
+		return null;
 	}
 	
-	public boolean registerStudentSection(Student aStudent, Section aSection)
+	public String registerStudentSection(Student aStudent, Section aSection)
 	{
-		if (!aStudent.getTentativeCourses().contains(aSection) && this.registrationPrereqTest(aStudent, aSection))
+		String str = this.registrationPrereqTest(aStudent, aSection);
+		if (!aStudent.getTentativeCourses().contains(aSection) && str == null)
 		{
 			ArrayList list = aStudent.getTentativeCourses();
 			list.add(aSection);
 			
-			return true;
+			return null;
 		}
-		return false;
+		str += "Already In Tentative List\n";
+		return str;
 	}
 	
 	public void generateClasses()
@@ -274,6 +299,9 @@ public class DatabaseManager {
 					Semester k = new Semester(day1, day2);
 					s.setSemester(k);
 					s.setCourseName(c.getDepartment());
+					RateMyProfessor rmp = s.getTeacherReview();
+					rmp.setCourseName(c.getDepartment());
+					rmp.setCourseNumber(c.getCourseNumber());
 					s.setTeacherID(selectedTeacher.getTeacherID());
 					selectedTeacher.addCurrentCourse(s);
 					sections.add(s);
@@ -452,12 +480,20 @@ public class DatabaseManager {
 		    	currentCourse.setCourseSubject(courseSubject);
 		    	String[] list = courseCredits.split(" ");
 		    	currentCourse.setCreditHours((int)Float.parseFloat(list[0]));
-		    	coursePrereqs = coursePrereqs.replaceFirst("Prerequisite: ", "");
+		    	coursePrereqs = coursePrereqs.replaceAll("Prerequisite: ", "");
+		    	coursePrereqs = coursePrereqs.replaceAll("Prerequisites: ", "");
 		    	list = coursePrereqs.split(", ");
-		    	for (int k = 0; k < list.length; k++)
-		    	{
-		    		currentCourse.addPrereq(list[k]);
-		    	}		    	
+		    	
+		    	
+	    		for (int k = 0; k < list.length; k++)
+	    		{
+	    			if (!list[k].equalsIgnoreCase(" ") && !list[k].equalsIgnoreCase(""))
+	    			{	
+	    				
+	    				currentCourse.addPrereq(list[k].trim());
+	    			}
+	    		}
+		    		
 		    	classes.add(currentCourse);
 		    	
 	    		courseNumber = stream.readLine();
