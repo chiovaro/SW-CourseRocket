@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-
+/**
+ * DatabaseManager: Used to store the database information. A center for getting information
+ */
 public class DatabaseManager {
 	
 	static ArrayList classes;
@@ -41,7 +43,9 @@ public class DatabaseManager {
 			s.expandRatings();
 		}
 	}
-	
+	/**
+	Check if a students prereqs satisfy registering for a section
+ */
 	public String registrationPrereqTest(Student aStudent, Section aSection)
 	{
 		for (int x = 0; x < this.classes.size(); x++)
@@ -110,7 +114,9 @@ public class DatabaseManager {
 		}
 		return null;
 	}
-	
+	/**
+	Returns Teacher object for a teacher ID
+ */
 	public Teacher getTeacherForID(int aID)
 	{
 		for (int x = 0; x < teachers.size(); x++)
@@ -121,7 +127,9 @@ public class DatabaseManager {
 		}
 		return null;
 	}
-	
+	/**
+	Returns if two classes collide with each other.
+ */
 	public boolean classesCollide(Section s1, Section s2)
 	{
 		ArrayList meets1 = s1.getMeetingTimes();
@@ -158,7 +166,9 @@ public class DatabaseManager {
 		return false;
 	}
 	
-	
+	/**
+	Returns error string or if no string then its allowed to be added
+	*/
 	public String checkAlreadyAdded(Student aStudent, Course c)
 	{
 		for (int s = 0; s < aStudent.getRegisteredClasses().size(); s++)
@@ -180,7 +190,9 @@ public class DatabaseManager {
 		}
 		return null;
 	}
-	
+	/**
+	Returns a error string or if none then you can register for it.
+	 */
 	public String registerStudentSection(Student aStudent, Section aSection)
 	{
 		String str = this.registrationPrereqTest(aStudent, aSection);
@@ -194,7 +206,9 @@ public class DatabaseManager {
 		str += "Already In Tentative List\n";
 		return str;
 	}
-	
+	/**
+	Generates classes for every course in the database.
+ */
 	public void generateClasses()
 	{
 		Date startDate;
@@ -311,6 +325,9 @@ public class DatabaseManager {
 		}		
 	}
 	
+	/**
+	Saves the DB to a file
+ */
 	public void saveDB()
 	{
 		FileOutputStream out;
@@ -455,7 +472,7 @@ public class DatabaseManager {
 		{}
 	}
 	
-	public void parseCourses()
+	private void parseCourses()
 	{
 		FileInputStream fin;
 		try
@@ -504,7 +521,7 @@ public class DatabaseManager {
 		{}
 	}
 	
-	public void parseTeachers()
+	private void parseTeachers()
 	{
 		FileInputStream fin;
 		try
@@ -527,7 +544,7 @@ public class DatabaseManager {
 		{}
 	}
 	
-	public void parseStudents()
+	private void parseStudents()
 	{
 		FileInputStream fin;
 		try

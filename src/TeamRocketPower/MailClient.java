@@ -8,7 +8,10 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.io.BufferedReader;
-
+/**
+MailClient: Used to send an email out on the mail.gsu.edu server.
+No authentication required.
+*/
 public class MailClient {
 
 	static String msgString = "Test Text.";
@@ -32,7 +35,9 @@ public class MailClient {
 			
 
 	}
-
+	/**
+	Sends a string from a person to another person via the mail.gsu.edu server
+ */
 	public static void send(String msgString, String from, String to) throws IOException 
 	{
 		Socket mailSocket;

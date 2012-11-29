@@ -8,7 +8,9 @@ import java.awt.RenderingHints;
 import javax.swing.JPanel;
 
 
-
+/**
+RMPPaint draws the graphs of the information for the teacher.
+*/
 public class RMPPaint extends JPanel{
 
 	float toughness = 0;
@@ -86,6 +88,9 @@ public class RMPPaint extends JPanel{
 		return true;
 	}
 	
+	/**
+	Repaints the graph based on the information in the level
+ */
 	public void paint(Graphics g)
     {
     	super.paint(g);

@@ -4,6 +4,7 @@ import java.util.*;
 import java.lang.*;
 
 /**
+ * RateMyProfessor: holds cumulative data about a specific section for a teacher
  */
 public class RateMyProfessor {
     /**
@@ -38,7 +39,9 @@ public class RateMyProfessor {
     {
     	Grades = new ArrayList();
     }
-    
+    /**
+	Initializes a professor from a custom DB string
+ */
     public RateMyProfessor(String aToString)
     {
     	//System.out.println(aToString);
@@ -55,7 +58,10 @@ public class RateMyProfessor {
     		Grades.add(Float.parseFloat(list[x]));
     	}
     }   
-    
+    /**
+	Returns the string of the entire class for saving to a flat 
+	file database.
+ */
     public String toString()
     {
     	String output = "";

@@ -27,7 +27,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.HierarchyBoundsAdapter;
 import java.awt.event.HierarchyEvent;
-
+/**
+AdvisorWindow: GIU used to display the advisement information
+*/
 public class AdvisorWindow {
 
 	JFrame frame;
@@ -50,8 +52,7 @@ public class AdvisorWindow {
 
 	/**
 	 * Initialize the contents of the frame.
-	 */
-	
+	 */	
 	public void addToFrame()
 	{
 		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
@@ -62,7 +63,9 @@ public class AdvisorWindow {
 	{
 		frame.getContentPane().remove(scrollPane);
 	}
-	
+	/**
+	Set up the GUI
+ */
 	private void initialize() {
 		scrollPane = main.scrollPane;
 		
@@ -116,9 +119,29 @@ public class AdvisorWindow {
 		btnNewButton.setBounds(182, 40, 162, 23);
 		aLines.add(btnNewButton);
 		
+		JTextPane txtpnSelectedClass = new JTextPane();
+		txtpnSelectedClass.setBackground(Color.CYAN);
+		txtpnSelectedClass.setText("Selected Class");
+		txtpnSelectedClass.setBounds(10, 139, 46, 34);
+		aLines.add(txtpnSelectedClass);
+		
+		JTextPane txtpnCompletedClass = new JTextPane();
+		txtpnCompletedClass.setBackground(Color.GREEN);
+		txtpnCompletedClass.setText("Completed Class");
+		txtpnCompletedClass.setBounds(58, 139, 55, 34);
+		aLines.add(txtpnCompletedClass);
+		
+		JTextPane txtpnRequiredIncomplete = new JTextPane();
+		txtpnRequiredIncomplete.setBackground(Color.RED);
+		txtpnRequiredIncomplete.setText("Required: Incomplete");
+		txtpnRequiredIncomplete.setBounds(116, 139, 55, 34);
+		aLines.add(txtpnRequiredIncomplete);
+		
 		
 	}
-	
+	/**
+	Create the course boxes for the deparment
+ */
 	public void initCourseBoxes()
 	{
 		int count = 0;
@@ -352,7 +375,7 @@ public class AdvisorWindow {
 						if (c != null)
 						{
 							changePaneColor(c);
-							aPane.setBackground(Color.blue);
+							aPane.setBackground(Color.cyan);
 						}
 						
 						long one = System.nanoTime();
@@ -389,7 +412,9 @@ public class AdvisorWindow {
 //		aLines.drawLines();
 		
 	}
-	
+	/**
+	Reset gui class colors to white.
+ */
 	public void resetColors()
 	{
 		for (int x3 = 0; x3 < componentsInAList.size(); x3++)
@@ -398,7 +423,9 @@ public class AdvisorWindow {
 			pane.setBackground(Color.WHITE);
 		}
 	}
-	
+	/**
+	update the pane colors
+ */
 	public void updatePaneColors()
 	{
 		Student myStudent = main.currentStudent;
@@ -435,7 +462,9 @@ public class AdvisorWindow {
 		
 
 	}
-	
+	/**
+	Changes a pane to a specific color
+ */
 	public void changePaneColor(Course c)
 	{
 		for (int d = 0; d < c.getPrereqList().size(); d++)
@@ -471,7 +500,9 @@ public class AdvisorWindow {
 		updatePaneColors();
 
 	}
-	
+	/**
+	Returns course object for a course name
+ */
 	public Course getCourseForName(String aName)
 	{
 		
@@ -486,7 +517,9 @@ public class AdvisorWindow {
 	
 		return null;
 	}
-	
+	/**
+	Returns course object from its short name Ex. CSC 4220
+ */
 	public Course getCourseShortName(String aName)
 	{
 		
@@ -502,7 +535,9 @@ public class AdvisorWindow {
 	
 		return null;
 	}
-	
+	/**
+	Returns Course for a specific CRN
+ */
 	public Course getCourseForCRN(int aCRN)
 	{
 		Section s = null;
@@ -527,20 +562,5 @@ public class AdvisorWindow {
 			}
 		}
 		return null;
-	}
-}
-
-class PrereqNode
-{
-	public ArrayList children;
-	public Course myCourse;
-	public PrereqNode(Course aCourse)
-	{
-		children = new ArrayList();
-		myCourse = aCourse;
-	}
-	public void addChild(Course c)
-	{
-		children.add(c);
 	}
 }

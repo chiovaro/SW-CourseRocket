@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.lang.*;
 
 /**
+ * Holds all the information for a specific course
  */
 public class Course{
     /**
@@ -49,6 +50,10 @@ public class Course{
     	sections = new ArrayList();
     }
     
+    
+    /**
+	Initializes a course from the DB string information.
+ */
     public Course(String aString)
     {
     	Books = new ArrayList();
@@ -124,12 +129,16 @@ public class Course{
     {
     	return this.CourseName;
     }
-    
+    /**
+	Add section to the course
+ */
     public void addSection(Section aSection)
     {
     	sections.add(aSection);
     }
-    
+    /**
+	Returns section list
+ */
     public ArrayList getSectionList()
     {
     	return sections;
@@ -186,7 +195,9 @@ public class Course{
     {
     	return CreditHours;
     }
-    
+    /**
+	Returns the entire objects string for saving into a database flat file.
+ */
     public String toString()
     {
     	String sendString = CourseSubject + "\n" + CourseNumber + "\n" + CourseName + "\n" + CourseName + "\nPrerequisites: ";

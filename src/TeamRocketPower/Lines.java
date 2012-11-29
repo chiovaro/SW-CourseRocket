@@ -8,7 +8,9 @@ import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-
+/**
+Lines: A canvas for drawing lines on
+*/
 public class Lines extends JPanel {
 
     int coords[][];
@@ -17,7 +19,7 @@ public class Lines extends JPanel {
     public Lines() {
         initUI();
     }
-
+    
     public final void initUI() {
 
         coords = new int[500][2];
@@ -28,7 +30,9 @@ public class Lines extends JPanel {
 
         setSize(300, 200);
     }
-    
+    /**
+	Repaints the scene
+ */
     public void paint(Graphics g)
     {
     	super.paint(g);
@@ -55,7 +59,9 @@ public class Lines extends JPanel {
 
     }
 
-
+    /**
+	Draws all the lines that have been added to the view
+ */
     public void drawLines() {
 
     	Graphics g = this.getGraphics();

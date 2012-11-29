@@ -4,6 +4,7 @@ import java.util.*;
 import java.lang.*;
 
 /**
+ * Student: Holds information about the student.
  */
 public class Student {
     /**
@@ -38,7 +39,9 @@ public class Student {
     	CompletedCourses = new ArrayList();
     	RegisteredCourses = new ArrayList();
     }
-    
+    /**
+	Initializes student from a DB string
+ */
     public Student(String aString)
     {
     	completedRatings = new ArrayList();
@@ -110,7 +113,9 @@ public class Student {
     		completedRatings.add(finished);
     	}
     }
-    
+    /**
+	Expand rating information after the DB has finished initalizing
+ */
     public void expandRatings()
     {
     	ArrayList add = new ArrayList();
@@ -176,7 +181,9 @@ public class Student {
     	return RegisteredCourses;
     }
     
-       
+    /**
+	String that would be saved to a flat file DB.
+ */
     public String toString()
     {
     	String myString = "";

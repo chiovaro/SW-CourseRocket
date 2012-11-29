@@ -30,6 +30,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JRadioButton;
 
+/**
+RateMyProfessorWindow: GUI for the rate my professor information.
+*/
 public class RateMyProfessorWindow {
 
 	JFrame frame;
@@ -218,6 +221,10 @@ public class RateMyProfessorWindow {
 
 	}
 	
+	
+	/**
+	Creates the rating box layout
+ */
 	public void createRatingBox()
 	{
 		removeAllratingPanelObjects();
@@ -311,6 +318,9 @@ public class RateMyProfessorWindow {
 		ratingPanel.add(grade);
 		ratingPanelObjects.add(grade);
 	}
+	/**
+	Returns a string of the selected button from a radio button group
+ */
 	public String getSelectedButtonText(ButtonGroup buttonGroup) {
         for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
@@ -323,6 +333,9 @@ public class RateMyProfessorWindow {
         return null;
     }
 	
+	/**
+	Removes all rating gui information
+ */
 	public void removeAllratingPanelObjects()
 	{
 		for (int x = 0; x < ratingPanelObjects.size(); x++){
@@ -334,12 +347,17 @@ public class RateMyProfessorWindow {
 		like = new ButtonGroup();
 		hot = new ButtonGroup();
 	}
-	
+	/**
+	Repaints the scene
+ */
 	public void repaintScene()
 	{
 		rmpPaint.repaint();
 	}
-	
+	/**
+	Initializes the current students list of completed classes
+	they still need to rate.
+ */
 	public void initList()
 	{
 		rateCourseComboBox.removeAllItems();
@@ -351,6 +369,9 @@ public class RateMyProfessorWindow {
 		}
 	}
 	
+	/**
+	Updates the professor information based on the selected box settings
+ */
 	public void updateProfessorRatingInformation()
 	{		
 		String Department = DepartmentComboBox.getSelectedItem().toString();
@@ -444,7 +465,9 @@ public class RateMyProfessorWindow {
 		
 	}
 	
-	
+	/**
+	Update the teacher list
+ */
 	public void reevaluateTeacherList()
 	{
 		String dept = "";

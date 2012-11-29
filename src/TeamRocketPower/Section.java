@@ -2,6 +2,7 @@ package TeamRocketPower;
 
 import java.util.*;
 /**
+ * Holds all the information and methods associated with a section
 */
 public class Section{
 	/**
@@ -53,6 +54,9 @@ public class Section{
 		Semester = new Semester(new Date(0), new Date(0));
 	}
 	
+	/**
+	Initialize from a custom DB string
+ */
 	public Section(String aToString)
 	{
 		//System.out.println(aToString);
@@ -233,7 +237,9 @@ public class Section{
 	{
 		return MaxCapacity;
 	}
-	
+	/**
+	Section object string to save to a flat file DB
+ */
 	public String toString()
 	{
 		String output = "";
@@ -288,7 +294,11 @@ public class Section{
 	{
 		return WaitingList;
 	}
-	
+	/**
+	Some of our arrays need information from the DB that might not be ready
+	at time of loading the DB. so call this after the DB has loaded all
+	the information then populate the information
+ */
 	public void expandArrayListConnections()
 	{
 		for (int x = 0; x < RegisteredStudents.size(); x++)

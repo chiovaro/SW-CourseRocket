@@ -11,6 +11,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 
 import java.awt.event.ActionListener;
@@ -30,6 +31,7 @@ import javax.swing.Box;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Point;
 
@@ -57,6 +59,10 @@ import javax.swing.JRadioButton;
 import java.awt.event.HierarchyBoundsAdapter;
 import java.awt.event.HierarchyEvent;
 
+/**
+CourseWindow: GUI for our course registration window. Can look at all the
+offered classes in a database as well as register for those classes
+*/
 public class CourseWindow {
 
 	public JFrame frame;
@@ -72,6 +78,7 @@ public class CourseWindow {
 	int calendarHeight;
 	JList registeredList;
 	JList tentativeList;
+	JLabel courseNameLabel;
 	ArrayList searchedClasses;
 	
 	ArrayList tentativeListClasses;
@@ -102,11 +109,18 @@ public class CourseWindow {
 	boolean weekdayExclude[];
 	boolean hourlyExclude[];
 	
+	/**
+	Initialize the window
+	 */
 	public CourseWindow(Main aMain) {
 		this.main = aMain;
 		initialize();
 	}
-	
+	/**
+	Load a students information into the current GUI
+	resets the classes displayed aswell as updates
+	the registered and tentative classes lists
+	 */
 	public void loadStudent(Student s)
 	{
 		this.removeAllSectionsFromView();
@@ -457,9 +471,10 @@ public class CourseWindow {
 								s.getRegisteredStudentsList().removeAll(s.getRegisteredStudentsList());
 								try
 								{
+									String email = JOptionPane.showInputDialog(null, "What Is Your Email?");
 									MailClient.send("The Class: " + s.getCourseName() + " " + s.getCourseNumber()
 											+ " Is finally available. Login to register before it gets full!" +
-											"\n\n -The Course Rocket Team", "DoNotReply@CourseRocket.com", "cdrury2@student.gsu.edu");
+											"\n\n -The Course Rocket Team", "DoNotReply@CourseRocket.com", email);
 								}
 								catch(IOException e)
 								{
@@ -510,6 +525,7 @@ public class CourseWindow {
 								registeredList.setListData(myList);
 								
 								s.addStudent(main.currentStudent);
+								
 								
 								initAllSectionsFromView(true);
 							}
@@ -620,7 +636,7 @@ public class CourseWindow {
 				main.changeViewToAdvisorWindow();
 			}
 		});
-		btnAdvisment.setBounds(355, 2, 104, 23);
+		btnAdvisment.setBounds(565, 2, 104, 23);
 		drawPanel.add(btnAdvisment);
 		
 		JButton btnRateMyProfessor = new JButton("Rate My Professor");
@@ -629,7 +645,7 @@ public class CourseWindow {
 				main.changeViewToRateProfessorWindow();
 			}
 		});
-		btnRateMyProfessor.setBounds(469, 2, 146, 23);
+		btnRateMyProfessor.setBounds(683, 2, 146, 23);
 		drawPanel.add(btnRateMyProfessor);
 		
 		JTextPane txtpnUnregistered = new JTextPane();
@@ -660,6 +676,10 @@ public class CourseWindow {
 		errorPane.setBounds(565, 363, 264, 84);
 		drawPanel.add(errorPane);
 		
+		courseNameLabel = new JLabel("");
+		courseNameLabel.setBounds(353, 6, 198, 14);
+		drawPanel.add(courseNameLabel);
+		
 		courses.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) 
 			{
@@ -667,6 +687,14 @@ public class CourseWindow {
 				{
 					if (!courses.getSelectedItem().toString().equalsIgnoreCase(""))
 					{
+						for (int k = 0; k < Main.myDB.getCourseList().size(); k++)
+						{
+							Course c = (Course)Main.myDB.getCourseList().get(k);
+							if (courses.getSelectedItem().toString().equalsIgnoreCase(c.getDepartment() + " " + c.getCourseNumber()))
+							{
+								courseNameLabel.setText(c.getCourseName());
+							}
+						}
 						sectionsModel.removeAllElements();
 						for (int x = 0; x < main.myDB.getSectionList().size(); x++)
 						{
@@ -752,6 +780,10 @@ public class CourseWindow {
 		repaint();
 	}
 	
+	/**
+	Updates the list of classes drawn in our view
+	to reflect the new department and course to show.
+	 */
 	public void updateGUIClasses()
 	{
 		removeAllSectionsFromView();
@@ -812,7 +844,9 @@ public class CourseWindow {
 		initAllSectionsFromView(false);
 		repaint();
 	}
-	
+	/**
+	Remove a list of sections from the view.
+	 */
 	public void removeSectionsFromView(ArrayList sects)
 	{
 		for (int x = 0; x < 5; x++)
@@ -836,6 +870,10 @@ public class CourseWindow {
 		completeClassLabels.removeAll(sects);
 	}
 	
+	/**
+	When clicking on a class schedule we need to update
+	its sibling windows as well to bring them to the front of the view.
+ */
 	public void setScheduleFocus(String aDepartment, int aCourseNumber)
 	{
 		ListModel model = departments.getModel();
@@ -863,6 +901,9 @@ public class CourseWindow {
 		updateGUIClasses();
 	}
 	
+	/**
+	Add sections into our view with a specific color.
+ */
 	public void updateViewWithSections(ArrayList sects, Color aColor)
 	{
 		for (int x = 0; x < sects.size(); x++)
@@ -900,9 +941,12 @@ public class CourseWindow {
 					float percent = (float)p/12;
 					
 					float durationPercent = ((float)s.getClassDuration()/(12*60));
-					
+					Course c = this.getCourseForCRN(s.getCRN());
 					JTextPane test = new JTextPane();
-					test.setText(s.getCRN() + "");
+					Font f = new Font(Font.SANS_SERIF, 3, 10);
+					test.setFont(f);
+					test.setText(s.getCRN() + " - " + c.getCourseName());
+					
 					test.setBounds(144+(71)*(o+1) + (weeklySchedule[o][p].size()*10), (int)(29+25+(percent*(calendarHeight))+(weeklySchedule[o][p].size()*10)), 44, (int) (durationPercent * (calendarHeight)));
 					test.setEditable(false);
 					test.addMouseListener(new MouseAdapter() {
@@ -920,7 +964,8 @@ public class CourseWindow {
 							
 							drawPanel.remove(classInfoPane);
 							JTextPane aPane = (JTextPane)arg0.getSource();
-							Course c = getCourseForCRN(Integer.parseInt(aPane.getText().toString()));
+							String strs[] = aPane.getText().split(" ");
+							Course c = getCourseForCRN(Integer.parseInt(strs[0]));
 							
 							
 							classInfoPane.setText(c.getCourseName());
@@ -1040,7 +1085,9 @@ public class CourseWindow {
 			}
 		}
 	}
-	
+	/**
+	Reset all the sections in our view to none.
+ */
 	public void removeAllSectionsFromView()
 	{
 		removeSectionsFromView(searchedClasses);
@@ -1052,6 +1099,10 @@ public class CourseWindow {
 		repaint();
 	}
 	
+	/**
+	Initialize our known sections in the view based on
+	the current students information.
+ */
 	public void initAllSectionsFromView(boolean shouldRepaint)
 	{
 
@@ -1092,7 +1143,9 @@ public class CourseWindow {
 	
 	
 	/**
-	 * 
+	 * If we have excluded a class because of time or day
+	 * we need to update if they should be shown in the gui
+	 * or not.
 	 */
 	public void updateSectionExcludes()
 	{
@@ -1133,14 +1186,18 @@ public class CourseWindow {
 		
 		
 	}
-	
+	/**
+	redraws our frame.
+ */
 	public void repaint()
 	{
 		
 		this.drawPanel.setPreferredSize(drawPanel.getPreferredSize());
 		frame.repaint();
 	}
-	
+	/**
+	Returns corresponding Course object for a specific CRN
+ */
 	public Course getCourseForCRN(int aCRN)
 	{
 		Section s = null;
@@ -1167,6 +1224,9 @@ public class CourseWindow {
 		return null;
 	}
 	
+	/**
+	Returns if a secition interferes with any excluded times.
+ */
 	public boolean sectionDoesntInterfereWithExcludes(Section s)
 	{
 		boolean add = true;
@@ -1186,6 +1246,9 @@ public class CourseWindow {
 		return add;
 	}
 	
+	/**
+	Returns a string of the information inside of a givin crn number
+ */
 	public String getInfoForCRN(int aCRN)
 	{
 		String text = "";

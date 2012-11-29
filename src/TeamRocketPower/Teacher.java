@@ -3,6 +3,7 @@ package TeamRocketPower;
 import java.util.*;
 
 /**
+ * Teacher: Holds the information about a teacher
  */
 public class Teacher extends Section {
     /**
@@ -26,7 +27,9 @@ public class Teacher extends Section {
     	CurrentCourse = new ArrayList();
     	TaughtCourses = new ArrayList();
     }
-    
+    /**
+	Initalizes teacher from a DB string.
+ */
     public Teacher(String aString)
     {
     	CurrentCourse = new ArrayList();
@@ -103,7 +106,9 @@ public class Teacher extends Section {
     {
     	Dept = aDepartment;
     }
-    
+    /**
+	String to save to a flat file DB.
+ */
     public String toString()
     {
     	String myString = "";

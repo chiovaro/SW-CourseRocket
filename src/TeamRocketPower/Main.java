@@ -10,7 +10,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.*; 
-
+/**
+Main: Initializes the windows and switches the views.
+*/
 public class Main{
 
 	static public DatabaseManager myDB;
